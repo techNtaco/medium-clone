@@ -1,9 +1,0 @@
-name = "medium-backend"
-main = "src/index.ts"
-compatibility_date = "2024-05-23"
-node_compat = true
-type = "javascript"
-
-[vars]
-PRISMA_ACCELERATE_URL  = "prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiMDFKVllRNDhYUVAzV05DTTBXOEU3MjJITUUiLCJ0ZW5hbnRfaWQiOiIwMDY2MDNlYWVkODhiODFhYTk1NzNmMmU4Y2VjMmExODlhOTQ4MzQwNWE4ZWY3NTNmMGMzMjRhY2Y5Njk4MzJkIiwiaW50ZXJuYWxfc2VjcmV0IjoiMzQ0ODc0NjgtYTQyNC00NzUyLWJiYTQtNDMzYTQ2OGUzZGFhIn0.Be4Or7xAdt6XFxMC2GhmaKj1FD7Vi6UH53wVQufNR-0"
-JWT_SECRET = "rpDOlZ6yDzy4q0zY6hwfli6UkU0v32"
