@@ -1,5 +1,5 @@
 import { Context } from 'hono'
-import { createBlogSchema, updateBlogSchema, blogPaginationSchema} from '../validations/blog.validations'
+import { createBlogSchema, updateBlogSchema, blogPaginationSchema } from '@teamaccess2024/medium-common'
 import { getPrisma } from '../lib/prisma'
 
 export const getBlogHandler = async (c: Context) => {

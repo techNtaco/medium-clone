@@ -1,13 +1,20 @@
 {
-  "name": "common",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@teamaccess2024/medium-common",
+  "version": "1.0.3",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
 }

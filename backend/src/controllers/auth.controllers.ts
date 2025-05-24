@@ -1,6 +1,6 @@
 import { Context } from 'hono'
-import { signupSchema, signinSchema } from '../validations/auth.validations'
 import bcrypt from 'bcryptjs'
+import { signupSchema, signinSchema } from '@teamaccess2024/medium-common'
 import { SignJWT } from 'jose'
 import { deleteCookie, setCookie } from 'hono/cookie'
 import { getPrisma } from '../lib/prisma'
