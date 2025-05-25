@@ -11,7 +11,8 @@ const app = new Hono<{
 }>();
 
 const allowedOrigins = [
-  'http://localhost:5173'
+  'http://localhost:5173',
+  'https://medium-clone-f1kn.vercel.app'
 ]
 
 app.use('/*', cors({
