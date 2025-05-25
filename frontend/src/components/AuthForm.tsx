@@ -77,7 +77,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, setMode }) => {
             };
 
       const response = await axios.post(url, payload, {
-        // withCredentials: true,
+        withCredentials: true,
         headers: { "Content-Type": "application/json" },
         validateStatus: () => true,
       });
