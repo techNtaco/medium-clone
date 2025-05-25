@@ -14,11 +14,13 @@ yarn-error.log*
 Thumbs.db
 
 # Env files
-**/.env
-**/.env.*.local
+.env*
 **/.env*
 .env.local
-**/.dev.vars 
+**/.env.local
+.dev.vars
+**/.dev.vars
+!.env.example
 **/!.env.example
 
 # IDE configs
