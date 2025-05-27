@@ -3,9 +3,8 @@ import { MiddlewareHandler } from 'hono'
 import { jwtVerify } from 'jose'
 
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
-  const token = getCookie(c, 'token')
+  const token = getCookie(c, 'token') // Get the token from cookies
   const secret = c.env.JWT_SECRET
-
   if (!token || !secret) return c.json({ error: 'Unauthorized' }, 401)
 
   try {

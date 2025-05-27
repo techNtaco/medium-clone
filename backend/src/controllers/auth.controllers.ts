@@ -2,7 +2,7 @@ import { Context } from 'hono'
 import bcrypt from 'bcryptjs'
 import { signupSchema, signinSchema } from '@teamaccess2024/medium-common'
 import { SignJWT } from 'jose'
-import { deleteCookie, setCookie } from 'hono/cookie'
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { getPrisma } from '../lib/prisma'
 
 export const signupHandler = async (c: Context) => {
@@ -30,6 +30,7 @@ export const signupHandler = async (c: Context) => {
 }
 
 export const signinHandler = async (c: Context) => {
+  const isProd = c.env.ENV === 'production'
   const prisma = getPrisma(c.env.PRISMA_ACCELERATE_URL)
   const JWT_SECRET = c.env.JWT_SECRET
   if (!JWT_SECRET) return c.json({ error: 'JWT_SECRET not defined' }, 500)
@@ -58,8 +59,8 @@ export const signinHandler = async (c: Context) => {
 
   setCookie(c, 'token', token, {
     httpOnly: true,
-    secure: true,
-    sameSite: 'Strict',
+    secure: isProd, // ✅ true on Cloudflare
+    sameSite: isProd ? 'None' : 'Lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7,
   })
@@ -68,6 +69,11 @@ export const signinHandler = async (c: Context) => {
     message: 'Signin successful',
     user: { id: user.id, email: user.email, username: user.name },
   })
+}
+
+export const getSessionHandler = async (c: Context) => {
+  const userId = c.get('userId')
+  return c.json({ user: { id: userId } })
 }
 
 export const logoutHandler = async (c: Context) => {

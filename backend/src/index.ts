@@ -23,9 +23,9 @@ app.use('/*', cors({
   },
   credentials: true,
 	allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
+  allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
  	exposeHeaders: ['Content-Type'],
-  	maxAge: 86400
+  maxAge: 86400
 }))
 
 app.route('/api/v1/auth', authRoutes)

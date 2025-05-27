@@ -64,3 +64,24 @@ export const updateBlogHandler = async (c: Context) => {
 
   return c.json(blog)
 }
+
+export const getUserBlogsHandler = async (c: Context) => {
+  const prisma = getPrisma(c.env.PRISMA_ACCELERATE_URL)
+  const userId = c.get('userId')
+  console.log('User ID:', userId)
+  const query = blogPaginationSchema.safeParse(c.req.query())
+  if (!query.success) return c.json({ error: query.error.format() }, 400)
+
+  const page = parseInt(query.data.page || '1')
+  const limit = parseInt(query.data.limit || '10')
+  const skip = (page - 1) * limit
+
+  const blogs = await prisma.post.findMany({
+    where: { authorId: userId },
+    skip,
+    take: limit,
+    orderBy: { id: 'desc' },
+  })
+  console.log('Fetched blogs:', blogs)
+  return c.json({ page, limit, blogs })
+}
