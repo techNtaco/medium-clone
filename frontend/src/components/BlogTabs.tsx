@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import CreateBlogDialog from './CreateBlogDialog'
 import BlogCard from './BlogCard'
 import { API_BASE_URL } from '../utils/api'
+import axios from 'axios'
 
 interface Blog {
     id: string,
@@ -18,10 +19,26 @@ const BlogTabs = () => {
 const fetchBlogs = async () => {
   const url = activeTab === 'all' ? '/blogs' : '/userBlogs'
   const fullUrl = `${API_BASE_URL}/api/v1/blog${url}`
-  const res = await fetch(fullUrl, {
-    credentials: 'include',
+
+  // const res = await axios.get(fullUrl, {
+  //   headers: { 
+  //     Accept: "application/json",  
+  //     "Content-Type": "application/json" 
+  //   },
+  //   withCredentials: true
+  // })
+
+  const token = localStorage.getItem('token')
+
+  const res = await axios.get(fullUrl, {
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    }
   })
-  const data = await res.json()
+
+  const { data } = res
   setBlogs(data.blogs)
 }
 

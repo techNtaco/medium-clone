@@ -14,6 +14,10 @@ interface AuthFormProps {
   setMode: React.Dispatch<React.SetStateAction<Mode>>
 }
 
+interface FieldErrors {
+  [field: string]: string
+}
+
 const initialFormState = { username: "", email: "", password: "" }
 
 const AuthForm: React.FC<AuthFormProps> = ({ mode, setMode }) => {
@@ -53,54 +57,74 @@ const AuthForm: React.FC<AuthFormProps> = ({ mode, setMode }) => {
     return true
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setApiError("")
-    if (!validate()) return
-    setLoading(true)
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+): Promise<void> => {
+  e.preventDefault()
+  setApiError('')
+  setErrors({})
+  if (!validate()) return
 
-    try {
-      const url = `${API_BASE_URL}/api/v1/auth/${mode}`
-      const payload =
-        mode === "signup"
-          ? { username: form.username, email: form.email, password: form.password }
-          : { email: form.email, password: form.password }
+  setLoading(true)
+  try {
+    const url = `${API_BASE_URL}/api/v1/auth/${mode}`
+    const payload =
+      mode === 'signup'
+        ? { username: form.username, email: form.email, password: form.password }
+        : { email: form.email, password: form.password }
 
-      const response = await axios.post(url, payload, {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-        validateStatus: () => true,
-      })
+    const response = await axios.post(url, payload, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
 
-      const { status, data } = response
-
-      if (status < 200 || status >= 300) {
-        if (data.error && typeof data.error === "object" && !Array.isArray(data.error)) {
-          const fieldErrors: Record<string, string> = {}
-          for (const key in data.error) {
-            fieldErrors[key] = data.error[key]._errors?.[0] || "Invalid value"
-          }
-          setErrors(fieldErrors)
-        } else {
-          setApiError(data.error || "Unknown error")
-        }
-        setLoading(false)
-        return
-      }
-      dispatch(setUser(data.user))
-      if (mode === "signin") {
-        navigate("/home") // ✅ go to home after signin
-      } else {
-        setMode("signin") // ✅ switch to login after signup
-      }
-
-      setForm(initialFormState)
-    } catch {
-      setApiError("Network error, please try again.")
-    } finally {
-      setLoading(false)
+    // On signin, stash the token & user, then navigate
+    if (mode === 'signin') {
+      localStorage.setItem('token', response.data.token)
+      dispatch(setUser(response.data.user))
+      navigate('/home')
+    } else {
+      // On signup success, switch to signin mode
+      setMode('signin')
     }
+
+    setForm(initialFormState)
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err) && err.response) {
+      const { data } = err.response as {
+        data: { error: unknown }
+      }
+
+      // If error is a field‐level object:
+      if (
+        typeof data.error === 'object' &&
+        data.error !== null &&
+        !Array.isArray(data.error)
+      ) {
+        const fieldObj = data.error as Record<
+          string,
+          { _errors?: string[] }
+        >
+        const newFieldErrors: FieldErrors = {}
+        for (const key in fieldObj) {
+          newFieldErrors[key] =
+            fieldObj[key]._errors?.[0] ?? 'Invalid value'
+        }
+        setErrors(newFieldErrors)
+      } else if (typeof data.error === 'string') {
+        setApiError(data.error)
+      } else {
+        setApiError('Unknown server error')
+      }
+    } else {
+      setApiError('Network error, please try again.')
+    }
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <form
